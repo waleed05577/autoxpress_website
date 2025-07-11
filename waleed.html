@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AutoXpress | Buy & Sell Cars</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      min-height: 100vh;
+    }
+
+    nav {
+      background: rgba(0, 0, 0, 0.85);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      height: 60px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .logo span {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 0 1rem;
+      cursor: pointer;
+    }
+
+    nav ul li:hover {
+      color: #00c6ff;
+    }
+
+    section {
+      padding: 100px 20px 60px 20px;
+      min-height: 100vh;
+      backdrop-filter: blur(6px);
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    section.active {
+      display: block;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input, textarea {
+      margin-top: 10px;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      background-color: #00c6ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0095cc;
+    }
+
+    .car-card {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      color: #eee;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    .car-card img {
+      width: 180px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 0 8px rgba(0,0,0,0.5);
+    }
+    .car-details {
+      flex-grow: 1;
+    }
+    .car-details h3 {
+      margin-bottom: 8px;
+    }
+    .car-details p {
+      margin-bottom: 6px;
+    }
+
+    .playstore-badge {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .playstore-badge img {
+      width: 180px;
+      height: auto;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.8);
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      color: #ccc;
+    }
+
+    /* Login Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .modal-content {
+      background: #fff;
+      color: black;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-content input {
+      width: 100%;
+      margin: 10px 0;
+      padding: 8px;
+      font-size: 1rem;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 30px;
+      color: black;
+      cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      nav {
+        flex-direction: column;
+        padding: 10px;
+        height: auto;
+      }
+
+      nav ul {
+        flex-direction: column;
+        margin-top: 10px;
+      }
+
+      .car-card {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .car-card img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="logo" onclick="showSection('home')">
+      <img src="https://cdn-icons-png.flaticon.com/512/743/743007.png" alt="AutoXpress Logo" />
+      <span>AutoXpress</span>
+    </div>
+    <ul>
+      <li onclick="showSection('home')">Home</li>
+      <li onclick="showSection('sell')">Sell</li>
+      <li onclick="showSection('browse')">Browse</li>
+      <li onclick="showSection('about')">About Us</li>
+      <li onclick="showSection('faq')">FAQ</li>
+      <li onclick="showSection('contact')">Contact</li>
+      <li><span class="login-btn" onclick="openModal()">Login</span></li>
+    </ul>
+  </nav>
+
+  <!-- Login Modal -->
+  <div class="modal" id="loginModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Login</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <input type="password" id="password" placeholder="Password" />
+      <button onclick="fakeLogin()">Login</button>
+    </div>
+  </div>
+
+  <!-- Home Section -->
+  <section id="home" class="active">
+    <div class="container">
+      <h1>Welcome to AutoXpress</h1>
+      <p>Buy & Sell Cars Easily Across Pakistan</p>
+      <p><strong>Created by Waleed Arain</strong></p>
+
+      <div class="playstore-badge">
+        <p>📱 Available on Google Play</p>
+        <a href="https://play.google.com/store" target="_blank" rel="noopener">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sell Section -->
+  <section id="sell">
+    <div class="container">
+      <h2>Sell Your Car</h2>
+      <form id="sellForm">
+        <input type="text" id="sellerName" placeholder="Your Name" required />
+        <input type="email" id="sellerEmail" placeholder="Email" required />
+        <input type="text" id="carMake" placeholder="Car Make (e.g., Toyota)" required />
+        <input type="text" id="carModel" placeholder="Car Model (e.g., Corolla)" required />
+        <input type="number" id="carYear" placeholder="Year" required min="1900" max="2100" />
+        <input type="number" id="carPrice" placeholder="Price (₨)" required min="0" />
+        <input type="url" id="carImage" placeholder="Car Image URL (e.g. https://)" />
+        <textarea id="carDescription" rows="4" placeholder="Description (Condition, Mileage, etc.)"></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Browse Cars -->
+  <section id="browse">
+    <div class="container">
+      <h2>Available Cars</h2>
+      <div id="carList">
+        <!-- Car cards inserted here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us -->
+  <section id="about">
+    <div class="container">
+      <h2>About AutoXpress</h2>
+      <p>
+        AutoXpress is Pakistan's premier online car marketplace where buyers and sellers meet.
+        Our mission is to simplify car buying and selling with ease and transparency.
+      </p>
+      <p>
+        Founded and developed by <strong>Waleed Arain</strong>, we strive to provide the best experience for car enthusiasts.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="container">
+      <h2>Frequently Asked Questions</h2>
+      <h3>How do I sell my car?</h3>
+      <p>Fill out the "Sell Your Car" form with your car details and contact information, then submit. Your car will be listed immediately.</p>
+
+      <h3>Is there any charge to list my car?</h3>
+      <p>No, listing your car on AutoXpress is completely free!</p>
+
+      <h3>How do I contact a seller?</h3>
+      <p>Contact details of the seller are displayed with each car listing. You can reach out to them via email.</p>
+
+      <h3>Can I upload pictures of my car?</h3>
+      <p>Yes! Provide an image URL when submitting your car. The picture will show with your listing.</p>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <p>Email: support@autoxpress.com</p>
+      <p>Phone: +92 300 1234567</p>
+      <p>Website by <strong>Waleed Arain</strong></p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 AutoXpress | All Rights Reserved | Created by Waleed Arain
+  </footer>
+
+  <script>
+    // Show only one section at a time for "multi-page" feel
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('section');
+      sections.forEach(sec => {
+        if (sec.id === sectionId) {
+          sec.classList.add('active');
+          if (sectionId === 'browse') {
+            loadCars(); // refresh car list when browsing
+          }
+        } else {
+          sec.classList.remove('active');
+        }
+      });
+      window.scrollTo(0, 0);
+    }
+
+    // Modal open/close
+    function openModal() {
+      document.getElementById("loginModal").style.display = "flex";
+    }
+    function closeModal() {
+      document.getElementById("loginModal").style.display = "none";
+    }
+    function fakeLogin() {
+      const user = document.getElementById("username").value;
+      alert("Welcome, " + user + "! (This is a demo login.)");
+      closeModal();
+    }
+
+    // Load cars from localStorage and display
+    function loadCars() {
+      const cars = JSON.parse(localStorage.getItem('cars')) || [];
+      const carList = document.getElementById('carList');
+      carList.innerHTML = '';
+
+      if (cars.length === 0) {
+        carList.innerHTML = '<p>No cars listed yet. Be the first to sell your car!</p>';
+        return;
+      }
+
+      cars.forEach(car => {
+        const card = document.createElement('div');
+        card.classList.add('car-card');
+        card.innerHTML = `
+          <img src="${car.image ? car.image : 'https://via.placeholder.com/180x120?text=No+Image'}" alt="${car.make} ${car.model}" />
+          <div class="car-details">
+            <h3>${car.year} ${car.make} ${car.model}</h3>
+            <p><strong>Price:</strong> ₨ ${car.price.toLocaleString()}</p>
+            <p><strong>Description:</strong> ${car.description || 'N/A'}</p>
+            <p><em>Seller: ${car.sellerName} | Email: <a href="mailto:${car.sellerEmail}" style="color:#00c6ff;">${car.sellerEmail}</a></em></p>
+          </div>
+        `;
+        carList.appendChild(card);
+      });
+    }
+
+    // Handle Sell Form submit
+    document.getElementById('sellForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const sellerName = document.getElementById('sellerName').value.trim();
+      const sellerEmail = document.getElementById('sellerEmail').value.trim();
+      const make = document.getElementById('carMake').value.trim();
+      const model = document.getElementById('carModel').value.trim();
+      const year = parseInt(document.getElementById('carYear').value);
+      const price = parseInt(document.getElementById('carPrice').value);
+      const image = document.getElementById('carImage').value.trim();
+      const description = document.getElementById('carDescription').value.trim();
+
+      if (!sellerName || !sellerEmail || !make || !model || !year || !price) {
+        alert('Please fill in all required fields!');
+        return;
+      }
+
+      // Optional: validate image URL (basic check)
+      if (image && !isValidUrl(image)) {
+        alert('Please enter a valid image URL.');
+        return;
+      }
+
+      // Create new car object
+      const newCar = {
+        sellerName,
+        sellerEmail,
+        make,
+        model,
+        year,
+        price,
+        image: image || '',
+        description
+      };
+
+      // Get existing cars or empty array
+      let cars = JSON.parse(localStorage.getItem('cars')) || [];
+      cars.push(newCar);
+
+      // Save updated cars list
+      localStorage.setItem('cars', JSON.stringify(cars));
+
+      // Reset form
+      this.reset();
+
+      alert('Your car has been listed successfully!');
+
+      // Go to Browse page to see listing
+      showSection('browse');
+      loadCars();
+    });
+
+    // URL validation helper
+    function isValidUrl(string) {
+      try {
+        new URL(string);
+        return true;
+      } catch (_) {
+        return false;
+      }
+    }
+
+    // Load cars on page load, show home by default
+    window.onload = () => {
+      showSection('home');
+      loadCars();
+    };
+  </script>
+
+</body>
+</html>
+
